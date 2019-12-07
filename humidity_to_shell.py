@@ -19,19 +19,23 @@ import datetime
 import time
 import RPi.GPIO as GPIO
 
+# initialize vars
+polling_interval = 5
+trip_count = 0
+humidity_limit = 30
+trip_count_limit = 3
+
+# LED Diode pin numbers
+green_led = 17
+red_led = 27
+
 # Setup GPIO Ports
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 # double check these if you rewire the breadboard
-GPIO.setup(17, GPIO.OUT)
-GPIO.setup(27, GPIO.OUT)
-
-
-# initialize a trip counter
-trip_count = 0
-humidity_limit = 30
-trip_count_limit = 3
+GPIO.setup(green_led, GPIO.OUT)
+GPIO.setup(red_led, GPIO.OUT)
 
 # set defeault for previous below
 humidity = 0
@@ -45,8 +49,8 @@ def blink_led(pin, speed):
     GPIO.output(pin, False)
 
 # initialize LEDs
-blink_led(17, 0.1)
-blink_led(27, 0.1)
+blink_led(green_led, 0.1)
+blink_led(red_led, 0.1)
 
 
 
@@ -62,7 +66,7 @@ while True:
     if trip_count >= trip_count_limit:
         print 'Trip Count Limit Reached - Send Alert (not yet working)'
         # Set Red LED to ON
-        GPIO.output(27,True)
+        GPIO.output(red_led,True)
 
     # humidity over limit
     if humidity >= humidity_limit:
@@ -71,7 +75,7 @@ while True:
         if trip_count < trip_count_limit:
             trip_count += 1
             # Blink Red LED
-            blink_led(27, 0.2)
+            blink_led(red_led, 0.2)
 
     
     # humidity under limit but trip_count tripped
@@ -91,11 +95,13 @@ while True:
     if humidity == previous_humidity:
         print 'Humidity stable at ' + str(humidity) + '%'
         if trip_count == 0:
-            GPIO.output(27, False)
+            GPIO.output(red_led, False)
 
     
     # Notify if Over Threshold for Trip Count
     #print 'Temp: {0:0.1f} C Humidity: {1:0.1f} %'.format(temperature, humidity)
     print 'Temperature is {0:0.1f} C'.format(temperature)
     blink_led(17, 0.05)
-    GPIO.output(17, True)
+    #GPIO.output(17, True)
+    time.sleep(polling_interval)
+

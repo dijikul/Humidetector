@@ -31,8 +31,8 @@ rgb_state = "blue"
 
 # blink loop variabls
 blink_low = 0
-blink_high = 60
-blink_interval = 5
+blink_high = 100
+blink_interval = 50
 
 # PIN Variables
 # LED Diode pin numbers
@@ -85,7 +85,7 @@ def blink_green(low = blink_low, high = blink_high, interval = blink_interval):
     # Green Loop
     for step in range(low, high, interval):
         set_led(0, step, 0)
-    for step in range(blink_high, blink_low, blink_interval * -1):
+    for step in range(high, low, interval * -1):
         set_led(0, step, 0)    
 
 def blink_blue(low = blink_low, high = blink_high, interval = blink_interval):
@@ -166,11 +166,11 @@ while(1):
     
     # set RGB LED based on current state
     if rgb_state == "red":
-        set_led(20, 0, 0)
+        set_led(10, 0, 0)
     if rgb_state == "green":
-        set_led(0, 20, 0)    
+        set_led(0, 10, 0)    
     if rgb_state == "blue":
-        set_led(0, 0, 20)
+        set_led(0, 0, 10)
     #GPIO.output(17, True)
     time.sleep(polling_interval)
 
