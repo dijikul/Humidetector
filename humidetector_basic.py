@@ -47,6 +47,14 @@ io.setmode(io.BCM)
 
 # ES Post Function
 def log_values(h, t):
+    
+    # Handle bad humidity reading
+    if h > 100:
+        # humidity mis-read: Cannot be this high.  DHT-11 sensor maxes out around 90% Humidity.
+        # Humidity can't be over 100%
+        print("Bad Humidity Reading - setting " + str(h) + "% to negative one ( -1 )")
+        h = -1
+    # Create document to send to ElasticSearch 
     doc = {
         'datetime': datetime.utcnow(),
         'humidity': int(h),
