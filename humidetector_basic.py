@@ -16,17 +16,27 @@
 import os
 import sys
 import Adafruit_DHT
-import datetime
+from datetime import datetime
 import time
 import RPi.GPIO as io
-#import asyncio
+
+# ES Logging implementation below
+from elasticsearch import Elasticsearch
+
+# initialize ES Client Connection
+es = Elasticsearch([
+    { 'host':'192.168.1.4' }
+    ])
+
 
 
 # initialize vars
-polling_interval = 2
+polling_interval = 30
 trip_count = 0
-humidity_limit = 40
+humidity_limit = 50
 trip_count_limit = 3
+es_index = "humidetector"
+location = "basement"
 
 # DHT11 Sensor Data Pin
 sensor_pin = 21
@@ -34,6 +44,27 @@ sensor_pin = 21
 # ignore errors
 io.setwarnings(False)
 io.setmode(io.BCM)
+
+# ES Post Function
+def log_values(h, t):
+    doc = {
+        'datetime': datetime.utcnow(),
+        'humidity': int(h),
+        'temperature': int(t),
+        'location': str(location)
+        }
+    try:
+        res = es.index(index=es_index, doc_type="humidetector", body=doc)
+        print(res['result'])
+    except ConnectionError as error:
+        print(" Connection Error Occured")
+        pass
+    except Exception as error:
+        print(error)
+        pass
+    #res.indices.refrsh(index=es_index)
+    
+    
 
 # clear terminal
 os.system('cls' if os.name == 'nt' else 'clear')
@@ -51,7 +82,7 @@ while(1):
     humidity, temperature = Adafruit_DHT.read_retry(11, sensor_pin)
    
     # print current date and time
-    print("\n" + str(datetime.datetime.now()))
+    print("\n" + str(datetime.now()))
 
     # alert if humidity over threshold and trip count over limit
     if trip_count >= trip_count_limit:
@@ -85,6 +116,9 @@ while(1):
     #print 'Temp: {0:0.1f} C Humidity: {1:0.1f} %'.format(temperature, humidity)
     print('Temperature is {0:0.1f} C'.format(temperature))
     
+    log_values(humidity, temperature)
+    
+        
     #GPIO.output(17, True)
     time.sleep(polling_interval)
 
