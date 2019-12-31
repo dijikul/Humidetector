@@ -39,8 +39,8 @@ trip_count = 0
 humidity_limit = 50
 trip_count_limit = 3
 es_index = "humidetector"
-location = "testing"
-send_to_elastic = 0
+location = "basement"
+send_to_elastic = 1
 
 
 
@@ -108,6 +108,7 @@ humidity1, temperature1 = Adafruit_DHT.read_retry(11, dht11_pin)
 print('DHT11 Sensor Initialized:\nHumidity: ' + str(humidity1) + ' and Temperature at ' + str(temperature1))
 # Init DHT22
 humidity2, temperature2 = Adafruit_DHT.read_retry(22, dht22_pin)
+humidity2 = round(humidity2, 2)
 print('DHT22 Sensor Initialized:\nHumidity: ' + str(humidity2) + ' and Temperature at ' + str(temperature2))
 
 
@@ -123,6 +124,7 @@ while(1):
 
     humidity1, temperature1 = Adafruit_DHT.read_retry(11, dht11_pin)
     humidity2, temperature2 = Adafruit_DHT.read_retry(22, dht22_pin)
+    humidity2 = round(humidity2, 2)
    
     # print current date and time
     print("\n" + str(datetime.now()))
