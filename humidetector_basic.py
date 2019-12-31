@@ -36,10 +36,16 @@ trip_count = 0
 humidity_limit = 50
 trip_count_limit = 3
 es_index = "humidetector"
-location = "basement"
+location = "testing"
+
+send_to_elastic = 0
+
+
 
 # DHT11 Sensor Data Pin
 sensor_pin = 21
+
+
 
 # ignore errors
 io.setwarnings(False)
@@ -61,16 +67,18 @@ def log_values(h, t):
         'temperature': int(t),
         'location': str(location)
         }
-    try:
-        res = es.index(index=es_index, doc_type="humidetector", body=doc)
-        print(res['result'])
-    except ConnectionError as error:
-        print(" Connection Error Occured")
-        pass
-    except Exception as error:
-        print(error)
-        pass
-    #res.indices.refrsh(index=es_index)
+    
+    if send_to_elastic == 1:
+        try:
+            res = es.index(index=es_index, doc_type="humidetector", body=doc)
+            print(res['result'])
+        except ConnectionError as error:
+            print(" Connection Error Occured")
+            pass
+        except Exception as error:
+            print(error)
+            pass
+        #res.indices.refrsh(index=es_index)
     
     
 

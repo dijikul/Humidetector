@@ -36,9 +36,9 @@ blink_interval = 50
 
 # PIN Variables
 # LED Diode pin numbers
-red_pin = 17
-green_pin = 27
-blue_pin = 22
+red_pin = 13
+green_pin = 19
+blue_pin = 26
 # DHT11 Sensor Data Pin
 sensor_pin = 21
 
