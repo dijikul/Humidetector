@@ -109,6 +109,7 @@ print('DHT11 Sensor Initialized:\nHumidity: ' + str(humidity1) + ' and Temperatu
 # Init DHT22
 humidity2, temperature2 = Adafruit_DHT.read_retry(22, dht22_pin)
 humidity2 = round(humidity2, 2)
+temperature2 = round(temperature2, 2)
 print('DHT22 Sensor Initialized:\nHumidity: ' + str(humidity2) + ' and Temperature at ' + str(temperature2))
 
 
